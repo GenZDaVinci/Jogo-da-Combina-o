@@ -1,0 +1,113 @@
+import tkinter as tk
+from tkinter import messagebox, simpledialog
+from itertools import permutations
+
+class CombinationGame:
+    def __init__(self):
+        self.correct_combinations = [
+            [19, 11, 2, 21],
+            [7, 23, 15, 27],
+            [6, 4, 29, 12],
+            [25, 31, 32, 8],
+            [39, 1, 22, 24],
+            [28, 26, 17, 10],
+            [9, 5, 20, 18],
+            [13, 3, 16, 14]
+        ]
+        self.root = tk.Tk()
+        self.root.title("Combination Game")
+        self.mode = "light"  # Default mode is light
+        self.set_color_scheme()
+
+        self.label = tk.Label(self.root, text="Welcome to the Combination Game!", font=("Helvetica", 20), bg=self.bg_color, fg=self.fg_color)  # Set label color and font size
+        self.label.pack(pady=20)
+
+        self.play_button = tk.Button(self.root, text="Play Game", command=self.play_game, font=("Helvetica", 14), bg=self.button_bg_color, fg=self.button_fg_color)  # Set button color and font size
+        self.play_button.pack(pady=10)
+
+        self.show_combinations_button = tk.Button(self.root, text="Show Combinations", command=self.show_combinations, font=("Helvetica", 14), bg=self.button_bg_color, fg=self.button_fg_color)  # Set button color and font size
+        self.show_combinations_button.pack(pady=10)
+
+        self.exit_button = tk.Button(self.root, text="Exit", command=self.root.destroy, font=("Helvetica", 14), bg=self.button_bg_color, fg=self.button_fg_color)  # Set button color and font size
+        self.exit_button.pack(pady=10)
+
+        self.mode_button = tk.Button(self.root, text="Toggle Mode", command=self.toggle_mode, font=("Helvetica", 12), bg=self.button_bg_color, fg=self.button_fg_color)  # Set button color and font size
+        self.mode_button.pack(pady=10)
+
+    def toggle_mode(self):
+        self.mode = "dark" if self.mode == "light" else "light"
+        self.set_color_scheme()
+        self.apply_color_scheme()
+
+    def set_color_scheme(self):
+        if self.mode == "light":
+            self.bg_color = "#FF0000"  # Red background
+            self.fg_color = "#FFFFFF"  # White text
+            self.button_bg_color = "#990000"  # Darker red button background
+            self.button_fg_color = "#FFFFFF"  # White button text
+        else:
+            # Dark mode color scheme (as before)
+            self.bg_color = "#333333"
+            self.fg_color = "#ffffff"
+            self.button_bg_color = "#555"
+            self.button_fg_color = "white"
+
+    def apply_color_scheme(self):
+        self.root.configure(bg=self.bg_color)
+        self.label.configure(bg=self.bg_color, fg=self.fg_color)
+        self.play_button.configure(bg=self.button_bg_color, fg=self.button_fg_color)
+        self.view_button.configure(bg=self.button_bg_color, fg=self.button_fg_color)
+        self.show_combinations_button.configure(bg=self.button_bg_color, fg=self.button_fg_color)
+        self.exit_button.configure(bg=self.button_bg_color, fg=self.button_fg_color)
+        self.mode_button.configure(bg=self.button_bg_color, fg=self.button_fg_color)
+
+    def play_game(self):
+        self.clear_label()
+        self.label.config(text="Let's play the game!", fg=self.fg_color, font=("Helvetica", 16))  # Set text color and font size
+
+        entry_var = tk.StringVar()
+        entry = tk.Entry(self.root, textvariable=entry_var, bg="#f2f2f2", font=("Helvetica", 14))  # Set entry background color and font size
+        entry.pack(pady=10)
+
+        submit_button = tk.Button(self.root, text="Submit", command=lambda: self.check_guess(entry_var.get()), bg=self.button_bg_color, fg=self.button_fg_color, font=("Helvetica", 14))  # Set button color and font size
+        submit_button.pack(pady=10)
+
+    def check_guess(self, user_input):
+        if user_input.lower() == 'menu':
+            self.clear_label()
+            return
+
+        user_input = [int(num) for num in user_input.split(',')]
+        if self.check_combination(user_input):
+            self.set_label("Congratulations! You guessed one of the correct combinations.", self.fg_color, font_size=16)  # Set text color and font size
+        else:
+            self.set_label("Incorrect combination. Try again.", self.fg_color, font_size=16)  # Set text color and font size
+
+
+    def show_combinations(self):
+        combinations_str = "\n".join([', '.join(map(str, combination)) for combination in self.correct_combinations])
+        messagebox.showinfo("Correct Combinations", combinations_str)
+
+    def check_combination(self, user_input):
+        user_permutations = set(permutations(user_input))
+        for correct_combination in self.correct_combinations:
+            if set(correct_combination) in user_permutations or tuple(correct_combination) in user_permutations:
+                return True
+        return False
+
+    def set_label(self, text, color="#000000", font_size=12):
+        messagebox.showinfo("Result", text)
+        self.label.config(text=text, fg=color, font=("Helvetica", font_size))  # Set text color and font size
+
+    def clear_label(self):
+        self.label.config(text="")
+
+    def run(self):
+        self.root.mainloop()
+
+if __name__ == "__main__":
+    game = CombinationGame()
+    game.run()
+
+
+       
